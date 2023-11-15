@@ -13,17 +13,37 @@ enum State{
     page1, page2
 };
 
+void announce(int seatIndex) {
+    switch (seatIndex / 10) {
+    case 0:
+        cout << "A";
+        break;
+    case 1:
+        cout << "B";
+        break;
+    case 2:
+        cout << "C";
+        break;
+    default:
+        cout << "D";
+        break;
+    }
+    if (seatIndex != 9) cout << '0' << (seatIndex + 1) % 10;
+    else cout << "10";
+}
+
 
 int main()
 {
 
-    State state = page1;
-    vector<int> index;
+    State state = page2;
+
+    vector<int> seats;
 
     RenderWindow window(VideoMode(SCRWIDTH, SCRHEIGHT), "SFML Image Loading");
 
     SecondaryPage second(1);
-    ThirdPage third;
+    ThirdPage third(seats);
 
     while (window.isOpen())
     {
@@ -43,6 +63,7 @@ int main()
             {
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
+                    Vector2i mousePos = Mouse::getPosition(window);
                     // Kiểm tra trạng thái trang và xử lý sự kiện
                     if (state == page1)
                     {
@@ -59,45 +80,58 @@ int main()
                     }
                     else if (state == page2)
                     {
-                        if (third.nextButtonIsPressed(window))
+                        if (third.nextButtonIsPressed(window, mousePos))
                         {
                             // Kết thúc chương trình
+                            if (!seats.empty()) {
+                                for (int temp : seats) {
+                                    announce(temp);
+                                    cout << ' ';
+                                }
+                            }
                             window.close();
                         }
-                        else if (third.prevButtonIsPressed(window))
+                        else if (third.prevButtonIsPressed(window, mousePos))
                         {
-                            // Quay lại trang 1
+                            // quay lại trang 1
                             state = page1;
                         }
 
-                        index = third.seatSelected(window);
-                        for (int x : index) {
-                            cout << x << ' ';
+                        // kiểm tra tình trạng ghế
+                        int temp = third.seatSelected(window, mousePos);
+                        auto it = find(seats.begin(), seats.end(), temp);
+                        if (it != seats.end()) {
+                            // hủy chọn nếu ghế đã được chọn trước đó
+                            seats.erase(remove(seats.begin(), seats.end(), temp), seats.end());
+                            third.changeSeatColor(seats);
+                            cout << '~';
+                            announce(temp);
+                            cout << endl;
                         }
-
+                        else {
+                            // chọn ghế nếu ghế chưa được chọn
+                            if (temp != -1) {
+                                seats.push_back(temp);
+                                third.changeSeatColor(seats);
+                                announce(temp);
+                                cout << endl;
+                            }
+                        }
                     }
                 }
             }
-            
-
-
-            /*if (event.type == sf::Event::MouseMoved && event.type != sf::Event::MouseLeft)
-            {
-                int mouseX = event.mouseMove.x;
-                int mouseY = event.mouseMove.y;
-                std::cout << "Mouse X: " << mouseX << " Mouse Y: " << mouseY << std::endl;
-            }*/
-
-
         }
 
 
         window.clear(Color::White);
-        if (state == page1) {
+        // render page
+        switch (state) {
+        case page1:
             second.draw(window);
-        }
-        else if (state == page2) {
+            break;
+        case page2:
             third.draw(window);
+            break;
         }
         window.display();
     }
