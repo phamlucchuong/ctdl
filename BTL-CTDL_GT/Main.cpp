@@ -2,6 +2,7 @@
 #include <iostream>
 #include "SecondaryPage.h"
 #include "ThirdPage.h"
+#include "FourthPage.h"
 
 using namespace sf;
 using namespace std;
@@ -10,7 +11,7 @@ const int SCRHEIGHT = 900;
 
 
 enum State{
-    page1, page2
+    page1, page2, page3, page4
 };
 
 void announce(int seatIndex) {
@@ -44,6 +45,8 @@ int main()
 
     SecondaryPage second(1);
     ThirdPage third(seats);
+    FourthPage fourth;
+
 
     while (window.isOpen())
     {
@@ -65,12 +68,12 @@ int main()
                 {
                     Vector2i mousePos = Mouse::getPosition(window);
                     // Kiểm tra trạng thái trang và xử lý sự kiện
-                    if (state == page1)
+                    if (state == page2)
                     {
                         if (second.nextButtonIsPressed(window))
                         {
                             // Chuyển đến trang 2
-                            state = page2;
+                            state = page3;
                         }
                         else if (second.prevButtonIsPressed(window))
                         {
@@ -78,24 +81,19 @@ int main()
                             window.close();
                         }
                     }
-                    else if (state == page2)
+                    else if (state == page3)
                     {
                         if (third.nextButtonIsPressed(window, mousePos))
                         {
-                            // Kết thúc chương trình
-                            if (!seats.empty()) {
-                                for (int temp : seats) {
-                                    announce(temp);
-                                    cout << ' ';
-                                }
-                            }
-                            window.close();
+                            // chuyển sang trang 4
+                            state = page4;
                         }
                         else if (third.prevButtonIsPressed(window, mousePos))
                         {
                             // quay lại trang 1
-                            state = page1;
+                            state = page2;
                             seats.clear();
+                            third.seatColorUpdate(seats);
                         }
 
                         // kiểm tra tình trạng ghế
@@ -119,6 +117,20 @@ int main()
                             }
                         }
                     }
+                    else if (state == page4) {
+                        if (fourth.prevButtonIsPressed(window, mousePos)) {
+                            // quay lại trang 3
+                            state = page3;
+                        }
+                        else if (fourth.nextButtonIsPressed(window, mousePos)) {
+                            for (int temp : seats) {
+                                announce(temp);
+                                cout << ' ';
+                            }
+                            // thoát khỏi chương trình
+                            window.close();
+                        }
+                    }
                 }
             }
         }
@@ -127,11 +139,14 @@ int main()
         window.clear(Color::White);
         // render page
         switch (state) {
-        case page1:
+        case page2:
             second.draw(window);
             break;
-        case page2:
+        case page3:
             third.draw(window);
+            break;
+        default:
+            fourth.draw(window);
             break;
         }
         window.display();
