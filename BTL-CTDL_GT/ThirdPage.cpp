@@ -84,28 +84,13 @@ ThirdPage::ThirdPage(vector<int> seats) : m_blocks("third"), m_texts("third")
 
 
     for (int i = 0; i < 35; i++) {
-        float xPos;
-        float yPos;
         float xScale = 0.1;
-        float yScale = 0.1;
-        if (i <= 9) {
-            xPos = 40 + i * 50;
-            yPos = yIconPrevPosition + 520;
+        float xMargin = 50.0f;
+        if (i > 29) {
+            xScale = 0.2f;
+            xMargin = 100.0f;
         }
-        else if (i <= 19) {
-            xPos = 40 + (i - 10) * 50;
-            yPos = yIconPrevPosition + 560;
-        }
-        else if (i <= 29) {
-            xPos = 40 + (i - 20) * 50;
-            yPos = yIconPrevPosition + 600;
-        }
-        else if (i <= 34) {
-            xPos = 40 + (i - 30) * 100;
-            yPos = yIconPrevPosition + 640;
-            xScale = 0.2;
-        }
-        m_blocks.AddBlockContainer("images/bg-gray.png", xPos, yPos, xScale, yScale);
+        m_blocks.AddBlockContainer("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
     }
 
     m_blocks.AddBlockContainer("images/bg-gray.png", xIconPrevPosition + 20, yIconPrevPosition + 690, 0.05, 0.05);
@@ -192,35 +177,16 @@ bool ThirdPage::nextButtonIsPressed(RenderWindow& window, Vector2i mousePos) {
 
 int ThirdPage::seatSelected(RenderWindow& window, Vector2i mousePos) {
 
-    float xScale = 0.1;
-    float yScale = 0.1;
-    float xIconPrevPosition = 40.0f;
-    float yIconPrevPosition = 35.0f;
-
     vector<BlockComponent> seats;
 
     for (int i = 0; i < 35; i++) {
-        float xPos;
-        float yPos;
-        if (i <= 9) {
-            xPos = 40 + i * 50;
-            yPos = yIconPrevPosition + 520;
+        float xScale = 0.1;
+        float xMargin = 50.0f;
+        if (i > 29) {
+            xScale = 0.2f;
+            xMargin = 100.0f;
         }
-        else if (i <= 19) {
-            xPos = 40 + (i - 10) * 50;
-            yPos = yIconPrevPosition + 560;
-        }
-        else if (i <= 29) {
-            xPos = 40 + (i - 20) * 50;
-            yPos = yIconPrevPosition + 600;
-        }
-        else if (i <= 34) {
-            xPos = 40 + (i - 30) * 100;
-            yPos = yIconPrevPosition + 640;
-            xScale = 0.2;
-        }
-        if (i > 28) yScale = 0.2;
-        BlockComponent m_seat("images/bg-gray.png", xPos, yPos, xScale, yScale);
+        BlockComponent m_seat("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
         seats.push_back(m_seat);
     }
 
@@ -235,38 +201,20 @@ int ThirdPage::seatSelected(RenderWindow& window, Vector2i mousePos) {
     return -1;
 }
 
-void ThirdPage::changeSeatColor(vector<int> seatIndex) {
+void ThirdPage::seatColorUpdate(vector<int> seatIndex) {
     for (int i = 0; i < 35; i++) {
-        float xPos;
-        float yPos;
-        float xSeatIndexScale = 0.7f;
-        float ySeatIndexScale = 0.65f;
-        float xScale = 0.1f;
-        float yScale = 0.1f;
-        float xIconPrevPosition = 40.0f;
-        float yIconPrevPosition = 35.0f;
-        if (i <= 9) {
-            xPos = 40 + i * 50;
-            yPos = yIconPrevPosition + 520;
+        float xMargin = 50.0f;
+        float grayxScale = 0.1f;
+        float redxScale = 0.7f;
+        if (i > 28) {
+            xMargin = 100.0f;
+            grayxScale = 0.2f;
+            redxScale = 1.3f;
         }
-        else if (i <= 19) {
-            xPos = 40 + (i - 10) * 50;
-            yPos = yIconPrevPosition + 560;
-        }
-        else if (i <= 29) {
-            xPos = 40 + (i - 20) * 50;
-            yPos = yIconPrevPosition + 600;
-        }
-        else if (i <= 34) {
-            xPos = 40 + (i - 30) * 100;
-            yPos = yIconPrevPosition + 640;
-            xScale = 0.2f;
-            xSeatIndexScale = 1.3f;
-        }
-        m_blocks.AddBlockContainer("images/bg-gray.png", xPos, yPos, xScale, yScale);
+        m_blocks.AddBlockContainer("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, grayxScale, 0.1f);
         for (int temp : seatIndex) {
             if (i == temp) {
-                m_blocks.AddBlockContainer("images/bg-gray-hover.png", xPos, yPos, xSeatIndexScale, ySeatIndexScale);
+                m_blocks.AddBlockContainer("images/bg-gray-hover.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, redxScale, 0.65f);
             }
         }
     }

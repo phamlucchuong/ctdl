@@ -95,6 +95,7 @@ int main()
                         {
                             // quay lại trang 1
                             state = page1;
+                            seats.clear();
                         }
 
                         // kiểm tra tình trạng ghế
@@ -103,7 +104,7 @@ int main()
                         if (it != seats.end()) {
                             // hủy chọn nếu ghế đã được chọn trước đó
                             seats.erase(remove(seats.begin(), seats.end(), temp), seats.end());
-                            third.changeSeatColor(seats);
+                            third.seatColorUpdate(seats);
                             cout << '~';
                             announce(temp);
                             cout << endl;
@@ -112,7 +113,7 @@ int main()
                             // chọn ghế nếu ghế chưa được chọn
                             if (temp != -1) {
                                 seats.push_back(temp);
-                                third.changeSeatColor(seats);
+                                third.seatColorUpdate(seats);
                                 announce(temp);
                                 cout << endl;
                             }

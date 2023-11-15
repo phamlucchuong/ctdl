@@ -23,6 +23,5 @@ public:
 	bool prevButtonIsPressed(RenderWindow& window, Vector2i mousePos);
 	bool nextButtonIsPressed(RenderWindow& window, Vector2i mousePos);
 	int seatSelected(RenderWindow& window, Vector2i mousePos);
-	void changeSeatColor(vector<int> seatIndex);
-	void eraseSeatColor(int seatErase);
+	void seatColorUpdate(vector<int> seatIndex);
 };
