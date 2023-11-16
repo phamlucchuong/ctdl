@@ -5,8 +5,11 @@
 class ThirdPage
 {
 private:
+	int singleSeat;
+	int coupleSeat;
 	int selectedItemIndex;
 	Font font;
+	Font exBold;
 	Font fontFilmName;
 	Font fontTitle;
 	Font fontDesc;
@@ -20,8 +23,9 @@ public:
 	ThirdPage(vector<int> seats);
 	~ThirdPage();
 	void draw(RenderWindow& window);
-	bool prevButtonIsPressed(RenderWindow& window, Vector2i mousePos);
-	bool nextButtonIsPressed(RenderWindow& window, Vector2i mousePos);
+	bool isButtonPressed(RenderWindow& window, Vector2i mousePos, bool key);
 	int seatSelected(RenderWindow& window, Vector2i mousePos);
 	void seatColorUpdate(vector<int> seatIndex);
+	string seatName(int seatIndex);
+	void seatUpdate(vector<int> seats, bool key);
 };

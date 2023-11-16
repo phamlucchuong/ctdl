@@ -3,6 +3,8 @@
 
 ThirdPage::ThirdPage(vector<int> seats) : m_blocks("third"), m_texts("third")
 {
+    singleSeat = 45;
+    coupleSeat = 90;
 
     string filePathIconPrev = "images/icon-prev.png";
     string filePath = "images/data/ke-kien-tao.png";
@@ -17,6 +19,8 @@ ThirdPage::ThirdPage(vector<int> seats) : m_blocks("third"), m_texts("third")
     float xIconPrevPosition = 40.0f;
     float yIconPrevPosition = 35.0f;
 
+
+    exBold.loadFromFile("fonts/Montserrat/Montserrat-ExtraBold.ttf");
     fontFilmName.loadFromFile("fonts/Montserrat/Montserrat-Bold.ttf");
     fontTitle.loadFromFile("fonts/Montserrat/Montserrat-SemiBold.ttf");
     fontDesc.loadFromFile("fonts/Montserrat/Montserrat-Regular.ttf");
@@ -90,10 +94,10 @@ ThirdPage::ThirdPage(vector<int> seats) : m_blocks("third"), m_texts("third")
             xScale = 0.2f;
             xMargin = 100.0f;
         }
-        m_blocks.AddBlockContainer("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
+        m_blocks.AddBlockContainer("images/bg-gray-page3.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
     }
 
-    m_blocks.AddBlockContainer("images/bg-gray.png", xIconPrevPosition + 20, yIconPrevPosition + 690, 0.05, 0.05);
+    m_blocks.AddBlockContainer("images/bg-gray-page3.png", xIconPrevPosition + 20, yIconPrevPosition + 690, 0.05, 0.05);
     m_texts.AddTextContainer("Ghe chua chon", fontDesc, 15, Color::Black, xIconPrevPosition + 50, yIconPrevPosition + 690);
 
     m_blocks.AddBlockContainer("images/bg-red-2.png", xIconPrevPosition + 20, yIconPrevPosition + 710, 0.2, 0.16);
@@ -102,7 +106,7 @@ ThirdPage::ThirdPage(vector<int> seats) : m_blocks("third"), m_texts("third")
     m_texts.AddTextContainer("A,B,C,D", fontTitle, 15, Color::Black, xIconPrevPosition + 270, yIconPrevPosition + 710);
     m_texts.AddTextContainer("Hang ghe", fontDesc, 15, Color::Black, xIconPrevPosition + 340, yIconPrevPosition + 710);
 
-    m_blocks.AddBlockContainer("images/bg-gray.png", xIconPrevPosition + 270, yIconPrevPosition + 690, 0.1, 0.05);
+    m_blocks.AddBlockContainer("images/bg-gray-page3.png", xIconPrevPosition + 270, yIconPrevPosition + 690, 0.1, 0.05);
     m_texts.AddTextContainer("Ghe doi", fontDesc, 15, Color::Black, xIconPrevPosition + 340, yIconPrevPosition + 690);
 
 
@@ -148,30 +152,25 @@ void ThirdPage::draw(RenderWindow& window)
     m_texts.Render(window);
 }
 
-bool ThirdPage::prevButtonIsPressed(RenderWindow& window, Vector2i mousePos) {
-
-
-    BlockComponent prevIcon("images/data/ke-kien-tao.png", 40.0f, 44.0f, 0.22, 0.2);
-
-    if (Mouse::isButtonPressed(Mouse::Left)) {
-        Vector2i mousePos = Mouse::getPosition(window);
-        if (prevIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-            return true;
-        }
+bool ThirdPage::isButtonPressed(RenderWindow& window, Vector2i mousePos, bool key) {
+    string filePath;
+    float xPos, yPos, xScale, yScale;
+    if (key) {
+        filePath = "images/bg-red.png";
+        xPos = 40.0f;
+        yPos = 35.0f + 380;
+        xScale = 0.3;
+        yScale = 0.3;
     }
-
-    return false;
-}
-
-
-bool ThirdPage::nextButtonIsPressed(RenderWindow& window, Vector2i mousePos) {
-    float xIconPrevPosition = 40.0f;
-    float yIconPrevPosition = 35.0f;
-    BlockComponent nextIcon("images/bg-red.png", xIconPrevPosition, yIconPrevPosition + 380, 0.3, 0.3);
-
-    if (nextIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-        return true;
-    } else return false;
+    else {
+        filePath = "images/data/ke-kien-tao.png";
+        xPos = 40.0f;
+        yPos = 44;
+        xScale = 0.22;
+        yScale = 0.2;
+    }
+    BlockComponent button(filePath, xPos, yPos, xScale, yScale);
+    return (button.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)));
 }
 
 
@@ -186,36 +185,77 @@ int ThirdPage::seatSelected(RenderWindow& window, Vector2i mousePos) {
             xScale = 0.2f;
             xMargin = 100.0f;
         }
-        BlockComponent m_seat("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
+        BlockComponent m_seat("images/bg-gray-page3.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, xScale, 0.1f);
         seats.push_back(m_seat);
     }
 
     for (int i = 0; i < 35; i++) {
         if (seats[i].getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-            //cout << "Click on seat" << endl;
             return i;
         }
     }
 
-    //cout << "Click outside any seat" << endl;
     return -1;
 }
 
 void ThirdPage::seatColorUpdate(vector<int> seatIndex) {
+    float xMargin = 50.0f;
+    float grayxScale = 0.1f;
+    float redxScale = 0.7f;
     for (int i = 0; i < 35; i++) {
-        float xMargin = 50.0f;
-        float grayxScale = 0.1f;
-        float redxScale = 0.7f;
         if (i > 28) {
             xMargin = 100.0f;
             grayxScale = 0.2f;
             redxScale = 1.3f;
         }
-        m_blocks.AddBlockContainer("images/bg-gray.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, grayxScale, 0.1f);
+        m_blocks.AddBlockContainer("images/bg-gray-page3.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, grayxScale, 0.1f);
         for (int temp : seatIndex) {
             if (i == temp) {
                 m_blocks.AddBlockContainer("images/bg-gray-hover.png", 40 + (i % 10) * xMargin, 35.0f + 520 + (i / 10) * 40, redxScale, 0.65f);
             }
         }
+    }
+}
+
+string ThirdPage::seatName(int seatIndex) {
+    string text, num;
+    switch (seatIndex / 10) {
+    case 0:
+        text = "A";
+        break;
+    case 1:
+        text = "B";
+        break;
+    case 2:
+        text = "C";
+        break;
+    default:
+        text = "D";
+        break;
+    }
+    if ((seatIndex % 10) != 9) num = "0" + to_string((seatIndex + 1) % 10);
+    else num = "10";
+    return text + num;
+}
+
+void ThirdPage::seatUpdate(vector<int> seats, bool key) {
+    float xPos = 500.0f;
+    float xMarginRight = 50.0f;
+    int price = 0;
+    for (int temp: seats){ 
+        if (key) {
+            m_texts.AddTextContainer(seatName(temp), fontDesc, 16, Color::Black, xPos, 793.0f);
+        }
+        else {
+            m_texts.AddTextContainer(seatName(temp), exBold, 16, Color::White, xPos, 793.0f);
+        }
+        xPos -= xMarginRight;
+        price += (temp > 28 ? 90 : 45);
+    }
+    if (key) {
+        m_texts.AddTextContainer(to_string(price * 1000), fontDesc, 16, Color::Black, 480.0f, 825.0f);
+    }
+    else {
+        m_texts.AddTextContainer(to_string(price * 1000), exBold, 16, Color::White, 480.0f, 825.0f);
     }
 }

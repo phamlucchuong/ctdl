@@ -106,27 +106,12 @@ void FourthPage::draw(RenderWindow& window)
 }
 
 bool FourthPage::prevButtonIsPressed(RenderWindow& window, Vector2i mousePos) {
-
     BlockComponent prevIcon("images/data/ke-kien-tao.png", 40.0f, 44.0f, 0.22, 0.2);
-
-    if (Mouse::isButtonPressed(Mouse::Left)) {
-        Vector2i mousePos = Mouse::getPosition(window);
-        if (prevIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-            return true;
-        }
-    }
-
-    return false;
+    return (prevIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)));
 }
 
 
 bool FourthPage::nextButtonIsPressed(RenderWindow& window, Vector2i mousePos) {
-    float xIconPrevPosition = 40.0f;
-    float yIconPrevPosition = 35.0f;
-    BlockComponent nextIcon("images/bg-red.png", xIconPrevPosition, yIconPrevPosition + 540, 0.25, 0.3);
-
-    if (nextIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos))) {
-        return true;
-    }
-    else return false;
+    BlockComponent nextIcon("images/bg-red.png", 70.0f, 825.0f, 0.65, 0.35);
+    return (nextIcon.getGlobalBounds().contains(window.mapPixelToCoords(mousePos)));
 }

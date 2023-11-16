@@ -20,6 +20,8 @@ class FourthPage
 		void draw(RenderWindow& window);
 		bool prevButtonIsPressed(RenderWindow& window, Vector2i mousePos);
 		bool nextButtonIsPressed(RenderWindow& window, Vector2i mousePos);
+		void seatUpdate(vector<int> seats);
+		void resetSeatText(vector<int> seats);
 	//	bool isSeatSelected(RenderWindow& window);
 	//	vector<int> seatSelected(RenderWindow& window);
 };

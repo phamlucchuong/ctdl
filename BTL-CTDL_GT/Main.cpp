@@ -14,30 +14,10 @@ enum State{
     page1, page2, page3, page4
 };
 
-void announce(int seatIndex) {
-    switch (seatIndex / 10) {
-    case 0:
-        cout << "A";
-        break;
-    case 1:
-        cout << "B";
-        break;
-    case 2:
-        cout << "C";
-        break;
-    default:
-        cout << "D";
-        break;
-    }
-    if (seatIndex != 9) cout << '0' << (seatIndex + 1) % 10;
-    else cout << "10";
-}
-
-
 int main()
 {
 
-    State state = page2;
+    State state = page3;
 
     vector<int> seats;
 
@@ -70,12 +50,15 @@ int main()
                     // Kiểm tra trạng thái trang và xử lý sự kiện
                     if (state == page2)
                     {
-                        if (second.nextButtonIsPressed(window))
+                        second.HandleChoseDate(mousePos.x, mousePos.y);
+                        second.HandleChoseCenima(mousePos.x, mousePos.y);
+                        second.HandleChoseTime(mousePos.x, mousePos.y);
+                        if (second.isButtonPressed(window, mousePos, 1))
                         {
                             // Chuyển đến trang 2
                             state = page3;
                         }
-                        else if (second.prevButtonIsPressed(window))
+                        else if (second.isButtonPressed(window, mousePos, 0))
                         {
                             // Thoát chương trình
                             window.close();
@@ -83,15 +66,16 @@ int main()
                     }
                     else if (state == page3)
                     {
-                        if (third.nextButtonIsPressed(window, mousePos))
+                        if (third.isButtonPressed(window, mousePos, 1))
                         {
                             // chuyển sang trang 4
                             state = page4;
                         }
-                        else if (third.prevButtonIsPressed(window, mousePos))
+                        else if (third.isButtonPressed(window, mousePos, 0))
                         {
                             // quay lại trang 1
                             state = page2;
+                            third.seatUpdate(seats, 0);
                             seats.clear();
                             third.seatColorUpdate(seats);
                         }
@@ -101,19 +85,20 @@ int main()
                         auto it = find(seats.begin(), seats.end(), temp);
                         if (it != seats.end()) {
                             // hủy chọn nếu ghế đã được chọn trước đó
+                            third.seatUpdate(seats, 0);
                             seats.erase(remove(seats.begin(), seats.end(), temp), seats.end());
                             third.seatColorUpdate(seats);
-                            cout << '~';
-                            announce(temp);
-                            cout << endl;
+                            third.seatUpdate(seats, 1);
+                            cout << '~' << third.seatName(temp) << endl;
                         }
                         else {
                             // chọn ghế nếu ghế chưa được chọn
                             if (temp != -1) {
+                                third.seatUpdate(seats, 0);
                                 seats.push_back(temp);
                                 third.seatColorUpdate(seats);
-                                announce(temp);
-                                cout << endl;
+                                third.seatUpdate(seats, 1);
+                                cout << third.seatName(temp) << endl;
                             }
                         }
                     }
@@ -123,10 +108,6 @@ int main()
                             state = page3;
                         }
                         else if (fourth.nextButtonIsPressed(window, mousePos)) {
-                            for (int temp : seats) {
-                                announce(temp);
-                                cout << ' ';
-                            }
                             // thoát khỏi chương trình
                             window.close();
                         }
